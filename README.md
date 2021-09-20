@@ -1,4 +1,4 @@
-# lego
+# h5-editor
 
 ## Project setup
 ```

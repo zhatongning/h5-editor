@@ -1,0 +1,1 @@
+export const DefaultColorOptions = ['#ffffff', '#ff0000', '#00ff00', '#0000ff', '#ffff00', '#00ffff', '#ff00ff', '#00bfff', '#c0c0c0', '']
