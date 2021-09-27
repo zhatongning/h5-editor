@@ -31,7 +31,6 @@ import { defineComponent, computed } from "vue";
 import { ElContainer, ElAside, ElMain } from "element-plus";
 import { useStore } from "vuex";
 import { GlobalStore, EditorComponent } from "../store/types";
-import LText from "../components/LText.vue";
 import ComponentList from "../components/ComponentList.vue";
 import EditorComponentWrapper from "../components/EditorComponentWrapper.vue";
 import ComponentMap from "../components/ComponentMap.vue";
@@ -41,7 +40,6 @@ export default defineComponent({
     ElContainer,
     ElAside,
     ElMain,
-    LText,
     ComponentList,
     EditorComponentWrapper,
     ComponentMap,
@@ -88,14 +86,20 @@ export default defineComponent({
 .editor {
   display: flex;
   height: 100%;
-  flex: 1;
 }
 .el-aside {
-  flex: 1;
   height: 100%;
-  background-color: #f1f1f1;
+  background-color: #ffffff;
+}
+.aside-left {
+  width: 328px;
+}
+.aside-right {
+  width: 276px;
 }
 .main {
-  flex: 1;
+  width: calc(100% - 328px - 276px);
+  background-color: #eef2f8;
+  height: 100%;
 }
 </style>

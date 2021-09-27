@@ -50,7 +50,7 @@ export default defineComponent({
 <style lang="scss">
   .component-wrapper {
     position: relative;
-    widows: auto;
+    width: auto;
 
     &.active::after {
       content: '';

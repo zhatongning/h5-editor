@@ -3,6 +3,8 @@
     <div v-for="(template, idx) in TemplatesConfig" :key="idx" @click="onItemClick(template)">
       <component v-bind:is="'l-text'" v-bind="template" />
     </div>
+
+    <uploader upload-url="http://127.0.0.1:3000/upload"/>
   </div>
 </template>
 
@@ -10,12 +12,12 @@
 import { defineComponent } from 'vue'
 import { TemplatesConfig } from '../config/template'
 import { EditorComponent } from '../store/types'
-import LText from '../components/LText.vue'
+import Uploader from './Uploader.vue'
 
 export default defineComponent({
   emits: ['on-template-click'],
   components: {
-    LText
+    Uploader
   },
   setup(props, context) {
     const onItemClick = (options: EditorComponent['props']) => {
