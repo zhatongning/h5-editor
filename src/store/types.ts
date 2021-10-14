@@ -1,7 +1,9 @@
+import { CursorRect } from '@/types/editors'
 export interface EditorOptions {
   components: EditorComponent[]
   // 当前选中的组件id
   currentComponentId: string
+  currentComponentRect: CursorRect
 }
 
 export interface EditorComponent {

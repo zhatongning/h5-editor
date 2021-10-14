@@ -1,4 +1,6 @@
-import { TextProps } from "@/types/editors"
+import { TextProps } from 'h5-editor-stripe'
+
+export type AllPropsUnion = (keyof TextProps)| 'imageSrc'
 
 export interface FormMapSubComponents {
   component: string
@@ -14,7 +16,7 @@ export interface FormMap {
   label: string
 
   text?: string
-  valueProp: string
+  valueProp?: string
   eventName: string
   otherProps?: {
     [index: string]: any
@@ -49,8 +51,25 @@ const FontFamilyOptions = FontFamilyArray.map((font) => {
   }
 })
 
-
-export const FormsMap: { [p in keyof TextProps]?: FormMap } = {
+export const FormsMap: { [p in AllPropsUnion]?: FormMap } = {
+  width: {
+    id: 'width',
+    component: "ElInput",
+    label: '宽度',
+    valueProp: 'model-value',
+    eventName: 'input',
+    beforeFormatter: (source: string) => parseInt(source),
+    afterFormattter: (source: number) => `${source}px`
+  },
+  height: {
+    id: 'height',
+    component: "ElInput",
+    label: '高度',
+    valueProp: 'model-value',
+    eventName: 'input',
+    beforeFormatter: (source: string) => parseInt(source),
+    afterFormattter: (source: number) => `${source}px`
+  },
   text: {
     id: 'text',
     component: "ElInput",
@@ -83,6 +102,8 @@ export const FormsMap: { [p in keyof TextProps]?: FormMap } = {
     label: '行高',
     valueProp: 'model-value',
     eventName: 'input',
+    beforeFormatter: (source: string) => parseInt(source),
+    afterFormattter: (source: number) => `${source}`,
     otherProps: {
       width: '100%',
       step: 0.1,
@@ -94,7 +115,6 @@ export const FormsMap: { [p in keyof TextProps]?: FormMap } = {
     id: 'fontFamily',
     component: 'ElDropdown',
     label: '字体',
-    valueProp: 'value',
     eventName: 'command',
     otherProps: {
       'split-button': true,
@@ -114,7 +134,12 @@ export const FormsMap: { [p in keyof TextProps]?: FormMap } = {
         }, ...FontFamilyOptions]
       }
     }
+  },
+  imageSrc: {
+    id: 'imageSrc',
+    component: 'image-processor',
+    label: '图片更新',
+    valueProp: 'url',
+    eventName: 'on-change'
   }
 }
-
-

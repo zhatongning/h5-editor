@@ -1,74 +1,75 @@
 <template>
   <el-container class="editor">
-    <el-aside class="aside-left">
-      <component-list @on-template-click="onTemplateClick" />
-    </el-aside>
-    <el-main class="main">
-      <editor-component-wrapper
-        v-for="comp in editorComponents"
-        :key="comp.id"
-        :id="comp.id"
-        :active="!!activeComponent && activeComponent.id === comp.id"
-        @onWrapperClick="handleComponentClick"
-        @onComponentRemove="handleComponentRemove"
-      >
-        <component :is="comp.type" v-bind="comp.props" />
-      </editor-component-wrapper>
-    </el-main>
-    <el-aside class="aside-right">
-      <pre>{{ activeComponent && activeComponent.props }}</pre>
-      <ComponentMap
-        v-if="activeComponent"
-        v-bind:props="activeComponent.props"
-        @onChange="handleComponentValueChange"
-      />
-    </el-aside>
+    <el-header class="header"></el-header>
+    <el-container class="content">
+      <el-aside class="aside-left">
+        <material-list @on-template-click="onTemplateClick" />
+      </el-aside>
+      <el-main class="main">
+        <div class="editor-page">
+          <editor-component-wrapper
+            v-for="comp in editorComponents"
+            :key="comp.id"
+            :id="comp.id"
+            @onWrapperClick="handleComponentClick"
+            @onComponentRemove="handleComponentRemove"
+          >
+            <component :is="comp.type" v-bind="comp.props" />
+          </editor-component-wrapper>
+          <editor-component-cursor />
+        </div>
+      </el-main>
+      <el-aside class="aside-right">
+        <pre>{{ activeComponent && activeComponent.props }}</pre>
+        <editor-component-table
+          v-if="activeComponent"
+          v-bind:props="activeComponent.props"
+          @onChange="handleComponentValueChange"
+        />
+      </el-aside>
+    </el-container>
   </el-container>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from "vue";
-import { ElContainer, ElAside, ElMain } from "element-plus";
 import { useStore } from "vuex";
 import { GlobalStore, EditorComponent } from "../store/types";
-import ComponentList from "../components/ComponentList.vue";
+import { CursorRect } from "@/types/editors"
+import MaterialList from "../components/MaterialList/index.vue";
 import EditorComponentWrapper from "../components/EditorComponentWrapper.vue";
-import ComponentMap from "../components/ComponentMap.vue";
+import EditorComponentTable from "../components/EditorComponentTable.vue";
+import EditorComponentCursor from "../components/EditorComponentCursor.vue"
 
 export default defineComponent({
   components: {
-    ElContainer,
-    ElAside,
-    ElMain,
-    ComponentList,
+    MaterialList,
     EditorComponentWrapper,
-    ComponentMap,
+    EditorComponentCursor,
+    EditorComponentTable,
   },
   setup() {
-    const store = useStore<GlobalStore>();
-    const editorComponents = computed(() => store.state.editor.components);
+    const store = useStore<GlobalStore>()
+    const editorComponents = computed(() => store.state.editor.components)
     const activeComponent = computed<EditorComponent | null>(
       () => store.getters.activeComponent
-    );
+    )
 
     const onTemplateClick = (componentOption: EditorComponent["props"]) => {
-      store.commit("addComponent", componentOption);
-    };
-
-    const handleComponentClick = (id: string) => {
-      store.commit("setActive", id);
-    };
-
-    const handleComponentRemove = (id: string) => {
-      store.commit("removeComponent", id);
-    };
-
-    const handleComponentValueChange = (key: string, value: any) => {
-      console.log(key, value)
-      store.commit("updateComponent", {key, value})
+      store.commit("addComponent", componentOption)
     }
 
-    console.log(activeComponent.value && activeComponent.value.props);
+    const handleComponentClick = (options: { id: string, componentRect: CursorRect }) => {
+      store.commit("setActive", options)
+    }
+
+    const handleComponentRemove = (id: string) => {
+      store.commit("removeComponent", id)
+    }
+
+    const handleComponentValueChange = (key: string, value: any ) => {
+      store.commit("updateComponent", {key, value})
+    }
 
     return {
       editorComponents,
@@ -82,9 +83,13 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style lang="scss" scoped>
 .editor {
+  height: 100%;
+}
+.content {
   display: flex;
+  justify-content: center;
   height: 100%;
 }
 .el-aside {
@@ -95,11 +100,18 @@ export default defineComponent({
   width: 328px;
 }
 .aside-right {
-  width: 276px;
+  width: 340px;
 }
 .main {
-  width: calc(100% - 328px - 276px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   background-color: #eef2f8;
-  height: 100%;
+}
+
+.editor-page {
+  width: 375px;
+  height: 667px;
+  background-color: #ffffff;
 }
 </style>

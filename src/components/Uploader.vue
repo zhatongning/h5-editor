@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="trigger">
-      <button @click="handleClick">
+      <div @click="handleClick">
         <slot name="uploading" v-if="isFileUploading">
           <span>正在上传</span>
         </slot>
@@ -9,7 +9,7 @@
         <slot name="uploadBefore" v-else>
           <span>点击上传</span>
         </slot>
-      </button>
+      </div>
       <input
         class="file-uploader"
         type="file"
@@ -20,32 +20,34 @@
         @error="handleInputError"
       />
     </div>
-    <ul v-for="file in uploadedFiles" :key="file.id">
-      <li class="file-item">
-        <div class="file-item-info">
-          <el-icon :size="20">
-            <picture-filled />
+    <template v-if="showList">
+      <ul v-for="file in uploadedFiles" :key="file.id">
+        <li class="file-item">
+          <div class="file-item-info">
+            <el-icon :size="20">
+              <picture-filled />
+            </el-icon>
+            <span>{{file.name}}</span>
+          </div>
+          <el-icon :size="20" class="success">
+            <check v-if="file.status === UploaderStatus.success" style="color: green;" />
           </el-icon>
-          <span>{{file.name}}</span>
-        </div>
-        <el-icon :size="20" class="success">
-          <check v-if="file.status === UploaderStatus.success" style="color: green;" />
-        </el-icon>
-        <el-icon class="remove" @click="handleRemove(file.id)">
-          <close style="color:red;" />
-        </el-icon>
-      </li>
-    </ul>
+          <el-icon class="remove" @click="handleRemove(file.id)">
+            <close style="color:red;" />
+          </el-icon>
+        </li>
+      </ul>
+    </template>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, computed, reactive } from 'vue'
-import axios from 'axios'
+import { upload } from '../utils/upload'
 import { ElIcon } from 'element-plus'
-import {  Loading, Check, Close, PictureFilled } from '@element-plus/icons'
+import { Check, Close, PictureFilled } from '@element-plus/icons'
 import { v4 as uuid } from 'uuid'
-import { last }  from 'lodash'
+import { last }  from 'lodash-es'
 
 enum UploaderStatus {
   pending,
@@ -75,8 +77,13 @@ export default defineComponent({
     uploadUrl: {
       type: String,
       require: true
+    },
+    showList: {
+      type: Boolean,
+      default: true
     }
   },
+  emits: ['addImage'],
   setup(props, context) {
     const fileInput = ref<null | HTMLInputElement>()
     const uploadedFiles = ref<UploadedFile[]>([])
@@ -94,8 +101,8 @@ export default defineComponent({
       const files = target.files || []
       const file = files[0]
       if (file) {
-         const formData = new FormData()
-        formData.append('avatar', file)
+        const formData = new FormData()
+        formData.append(file.name, file)
         try {
           if (props.uploadUrl) {
             fileObj = reactive({
@@ -106,13 +113,20 @@ export default defineComponent({
               status: UploaderStatus.uploading,
             })
             uploadedFiles.value.push(fileObj)
-            const res = await axios.post(props.uploadUrl, formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-            })
+            const url = await upload(props.uploadUrl, file)
             fileObj.status = UploaderStatus.success
-            fileObj.res = res
+            if (url) {
+              const newImage = new Image()
+              newImage.src = url
+              newImage.onload = () => {
+                console.log('addImage', url)
+                context.emit('addImage', {
+                  imageSrc: url,
+                  width: `${newImage.width}px`,
+                  height: `${newImage.height}px`
+                })
+              }
+            }
           }
         } catch(e) {
           fileObj.status = UploaderStatus.fail

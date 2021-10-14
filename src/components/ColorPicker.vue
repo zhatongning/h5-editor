@@ -52,8 +52,8 @@ export default defineComponent({
     .item {
       margin-top: 6px;
       .color-box {
-        width: 60px;
-        height: 30px;
+        width: 25px;
+        height: 20px;
         margin-right: 6px;
       }
       .transparent-bg {

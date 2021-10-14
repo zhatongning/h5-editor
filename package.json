@@ -1,7 +1,7 @@
 {
   "name": "h5-editor",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -11,7 +11,9 @@
   "dependencies": {
     "axios": "^0.21.4",
     "core-js": "^3.6.5",
+    "cropperjs": "^1.5.12",
     "element-plus": "^1.1.0-beta.10",
+    "h5-editor-stripe": "^0.1.6",
     "lodash-es": "^4.17.21",
     "uuid": "^3.4.0",
     "vue": "^3.0.0",
@@ -24,6 +26,7 @@
     "@types/lodash-es": "^4.17.5",
     "@types/uuid": "^8.3.1",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/experimental-utils": "^5.0.0",
     "@typescript-eslint/parser": "^4.18.0",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
