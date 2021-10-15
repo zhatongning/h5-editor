@@ -110,6 +110,7 @@ export default defineComponent({
 }
 
 .editor-page {
+  position: relative;
   width: 375px;
   height: 667px;
   background-color: #ffffff;

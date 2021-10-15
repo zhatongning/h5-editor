@@ -9,7 +9,6 @@ export const getCursorWrapperRect = (element: HTMLElement, options?: { padding: 
 
   const padding = options?.padding || 5
   const getWrapperStyle = () => {
-    console.log(element)
     const rect = element.style
     return {
       left: parseInt(rect.left) - padding + 'px',
