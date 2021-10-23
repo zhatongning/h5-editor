@@ -2,12 +2,14 @@ import { TextProps } from 'h5-editor-stripe'
 
 export type AllPropsUnion = (keyof TextProps)| 'imageSrc'
 
-export interface FormMapSubComponents {
+interface SubSlot {
+  [index: string]: SlotOption
+}
+
+export interface SlotOption {
   component: string
   options: any[]
-  slot?: string
-
-  subComponents?: FormMapSubComponents
+  slots?: SubSlot
 
 }
 export interface FormMap {
@@ -25,7 +27,7 @@ export interface FormMap {
   beforeFormatter?(opt: any): any
   afterFormattter?(opt: any): any
 
-  subComponents?: FormMapSubComponents
+  slots?: SubSlot
 
 }
 
@@ -122,16 +124,25 @@ export const FormsMap: { [p in AllPropsUnion]?: FormMap } = {
       trigger: 'click',
     },
     text: '选择字体',
-    subComponents: {
-      slot: "dropdown",
-      component: 'ElDropdownMenu',
-      options: [{}],
-      subComponents: {
-        component: 'ElDropdownItem',
+    slots: {
+      default: {
+        component: 'span',
         options: [{
-          command: '',
-          text: '无'
-        }, ...FontFamilyOptions]
+          text: '选择字体'
+        }],
+      },
+      dropdown: {
+        component: 'ElDropdownMenu',
+        options: [{}],
+        slots: {
+          default: {
+            component: 'ElDropdownItem',
+            options: [{
+              command: '',
+              text: '无'
+            }, ...FontFamilyOptions]
+          }
+        }
       }
     }
   },
@@ -141,5 +152,30 @@ export const FormsMap: { [p in AllPropsUnion]?: FormMap } = {
     label: '图片更新',
     valueProp: 'url',
     eventName: 'on-change'
+  },
+  textAlign: {
+    id: 'textAlign',
+    component: 'ElRadioGroup',
+    eventName: 'change',
+    label: '对齐',
+    otherProps: {
+      size: 'small'
+    },
+    valueProp: 'model-value',
+    slots: {
+      default: {
+        component: 'ElRadioButton',
+        options: [
+          {
+            label: 'left',
+          },
+          {
+            label: 'center',
+          },
+          {
+            label: 'right',
+          }]
+      }
+    }
   }
 }

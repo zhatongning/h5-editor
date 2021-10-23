@@ -14,7 +14,6 @@ export const TextTemplatesConfig: LTextProps[] = [
     tag: 'h2',
     marginTop: '0px',
     marginBottom: '0px',
-    position: 'absolute',
   },
   {
     text: '添加副标题',
@@ -22,7 +21,8 @@ export const TextTemplatesConfig: LTextProps[] = [
     fontWeight: '700',
     textAlign: 'center',
     color: 'rgb(0, 0, 0)',
-    tag: 'h2'
+    tag: 'h2',
+    fontSize: '24px'
   },
   {
     text: '输入内容',

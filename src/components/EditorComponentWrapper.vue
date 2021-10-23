@@ -1,13 +1,12 @@
 <template>
   <div
-    :class="['component-wrapper',  { 'is-dragable': isDragable } ]"
+    :class="['component-wrapper',  { 'is-dragable': isDragable }, { 'is-active': active } ]"
     @click="handleClick"
-    :draggable="true"
-    @dragstart="handleDragStart"
-    @dragover.prevent="handleDrag"
-    @dragend="handleDragEnd"
+    @mousedown="handleDragStart"
     @mouseup="handleMouseUp"
-    :style="{ left: curPos.x + 'px', top: curPos.y + 'px' }"
+    @mousedrag.prevent=""
+    ref="wraperRef"
+    :style="{ left: curPos.left + 'px', top: curPos.top + 'px' }"
   >
     <slot></slot>
   </div>
@@ -15,7 +14,6 @@
 
 <script lang="ts">
 import { defineComponent, reactive, ref } from 'vue'
-import { getCursorWrapperRect } from '@/utils/getCursorWrapperRect'
 
 export default defineComponent({
   props: {
@@ -25,44 +23,54 @@ export default defineComponent({
     },
     active: {
       type: Boolean
+    },
+    props: {
+      type: Object,
+      require: true
     }
   },
-  methods: {
-    forceUpdate() {
-      this.$forceUpdate()
-    }
-  },
-  emits: ['on-wrapper-click', 'on-component-remove', ],
+  emits: ['on-wrapper-click', 'on-component-remove', 'on-component-update'],
   setup(props, context) {
-    const curPos = reactive({ x: 0, y: 0 })
+    const curPos = reactive<{ left: number, top: number }>({ left: 0, top: 0 })
     const isDragable = ref<boolean>(false)
+    const wraperRef = ref<null | HTMLDivElement>(null)
+
+    curPos.left = parseInt(props.props?.left) || 0
+    curPos.top = parseInt(props.props?.top) || 0
 
     const handleClick = (e: MouseEvent) => {
       if ((e.target as HTMLDivElement)?.classList?.contains('component-wrapper')) return
       context.emit('on-wrapper-click', {
-        id: props.id,
-        componentRect: getCursorWrapperRect(e.target as HTMLElement)
+        id: props.id
       })
     }
 
-    let startX = 0, startY = 0, initialLeft = 0, initialTop = 0
-    const handleDragStart = (e: DragEvent) => {
-      // isDragable.value = true
-      e.stopPropagation()
-      startX = e.x
-      startY = e.y
-      // e.dataTransfer?.setData('text/plain', '')
-      initialLeft = parseInt((e.target as HTMLDivElement).style.left, 10)
-      initialTop = parseInt((e.target as HTMLDivElement).style.top, 10)
+    const offset = {x: 0, y: 0}
+    const handleDragStart = (e: MouseEvent) => {
+      if (!props.active) return
+      const element = wraperRef.value
+      const offsetParent = document.querySelector('.editor-page')
+      if (element && offsetParent) {
+        const { left, top } = element.getBoundingClientRect()
+        const offsetParentRect = offsetParent.getBoundingClientRect()
+        offset.x = e.clientX - left + offsetParentRect.left
+        offset.y = e.clientY - top + offsetParentRect.top
+      }
+      document.body.addEventListener('mousemove', handleDrag)
     }
 
-    const handleDrag = (e: DragEvent) => {
-      curPos.x =  initialLeft + (e.x - startX)
-      curPos.y = initialTop + e.y - startY
+    const handleDrag = (e: MouseEvent) => {
+      curPos.left = e.clientX  - offset.x
+      curPos.top = e.clientY - offset.y
     }
 
     const handleMouseUp = () => {
-      // isDragable.value = false
+      document.body.removeEventListener('mousemove', handleDrag)
+      context.emit('on-component-update', {
+        position: 'absolute',
+        left: curPos.left + 'px',
+        top: curPos.top + 'px'
+      })
     }
 
     return {
@@ -71,7 +79,8 @@ export default defineComponent({
       handleDrag,
       handleMouseUp,
       curPos,
-      isDragable
+      isDragable,
+      wraperRef
     }
   },
 })
@@ -81,8 +90,13 @@ export default defineComponent({
 <style lang="scss">
 .component-wrapper {
   position: absolute;
+  cursor: pointer;
+  border: 2px solid transparent;
   &.is-dragable {
-    cursor: pointer;
+    cursor: move;
+  }
+  &.is-active {
+    border: 2px solid #6ccfff;
   }
 }
 </style>

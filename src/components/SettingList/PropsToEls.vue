@@ -13,22 +13,18 @@
           [component.eventName]: (e) => component.eventListerer(e, component.id)
         }"
       >
-        {{ component.text }}
-        <template v-slot:[component.subComponents?.slot]>
-          <template v-if="component.subComponents && component.subComponents.subComponents" >
-            <component :is="component.subComponents?.component" v-for="(option, childKey) in component.subComponents.options" v-bind="option" :key="childKey">
-              <template v-if="component.subComponents?.subComponents && component.subComponents?.subComponents.component && component.subComponents.subComponents.options">
-                <template v-for="(childChildOption, chichiKey) in component.subComponents.subComponents.options" :key="chichiKey">
-                  <component :is="component.subComponents?.subComponents?.component"  v-bind="childChildOption" >
-                    <v-node-renderer :vnode="childChildOption.text"/>
-                  </component>
-                </template>
-              </template>
-            </component>
-          </template>
-          <template v-else-if="component.subComponents">
-            <component :is="component.subComponents?.component" v-for="(option, childKey) in component.subComponents.options" v-bind="option" :key="childKey"></component>
-          </template>
+        <template v-for="(item, slotName) in component.slots" v-slot:[slotName]>
+          <component :is="item.component" v-for="(option, index) in item.options" v-bind="option" :key="index" >
+            <span v-if="option && option.text">{{ option.text }}</span>
+            <template v-for="(childItem, childSlotName) in item.slots" v-slot:[childSlotName]>
+              <component :is="childItem.component" v-for="(opt, childIndex) in childItem.options" v-bind="opt" :key="childIndex" >
+                <span v-if="typeof opt.text === 'string'" >
+                  {{ opt.text }}
+                </span>
+                <v-node-renderer v-else :vnode="opt.text" />
+              </component>
+            </template>
+          </component>
         </template>
       </component>
     </div>
@@ -37,11 +33,11 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
-import { FormsMap, FormMap, AllPropsUnion } from '../utils/propsMap'
+import { FormsMap, FormMap, AllPropsUnion } from '../../utils/propsMap'
 import { reduce } from 'lodash-es'
-import VNodeRenderer from './VNodeComponent'
+import VNodeRenderer from '../VNodeComponent'
 import ColorPicker from '@/components/ColorPicker.vue'
-import ImageProcessor from './ImageProcessor.vue'
+import ImageProcessor from '../ImageProcessor.vue'
 
 interface PropFormMap extends FormMap {
   value: string

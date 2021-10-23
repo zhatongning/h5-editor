@@ -1,5 +1,5 @@
 <template>
-  <div class="component-cursor" :style="wrapperRect">
+  <div class="component-cursor">
     <el-icon :size="20" v-show="currentComponentId" class="remove" @click="handleRemove">
       <delete  />
     </el-icon>
@@ -26,8 +26,6 @@ export default defineComponent({
   },
   setup() {
     const store = useStore<GlobalStore>()
-
-    const wrapperRect = computed(() => store.state.editor.currentComponentRect)
     const currentComponentId = computed(() => store.state.editor.currentComponentId)
 
     const handleRemove = () => {
@@ -35,7 +33,6 @@ export default defineComponent({
     }
 
     return {
-      wrapperRect,
       handleRemove,
       currentComponentId
     }

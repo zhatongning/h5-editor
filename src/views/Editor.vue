@@ -11,18 +11,21 @@
             v-for="comp in editorComponents"
             :key="comp.id"
             :id="comp.id"
+            :props="pickPositionField(comp.props, PositionKeys).picked"
+            :active="activeComponent && activeComponent.id === comp.id"
             @onWrapperClick="handleComponentClick"
             @onComponentRemove="handleComponentRemove"
+            @onComponentUpdate="batchUpdate"
           >
-            <component :is="comp.type" v-bind="comp.props" />
+            <component :is="comp.type" v-bind="pickPositionField(comp.props, PositionKeys).remaining" />
           </editor-component-wrapper>
-          <editor-component-cursor />
+          <!-- <editor-component-cursor /> -->
         </div>
       </el-main>
       <el-aside class="aside-right">
-        <pre>{{ activeComponent && activeComponent.props }}</pre>
         <editor-component-table
           v-if="activeComponent"
+          :key="activeComponent.id"
           v-bind:props="activeComponent.props"
           @onChange="handleComponentValueChange"
         />
@@ -35,11 +38,11 @@
 import { defineComponent, computed } from "vue";
 import { useStore } from "vuex";
 import { GlobalStore, EditorComponent } from "../store/types";
-import { CursorRect } from "@/types/editors"
 import MaterialList from "../components/MaterialList/index.vue";
 import EditorComponentWrapper from "../components/EditorComponentWrapper.vue";
-import EditorComponentTable from "../components/EditorComponentTable.vue";
+import EditorComponentTable from "../components/SettingList/index.vue";
 import EditorComponentCursor from "../components/EditorComponentCursor.vue"
+const PositionKeys = ['position', 'left', 'top']
 
 export default defineComponent({
   components: {
@@ -47,6 +50,20 @@ export default defineComponent({
     EditorComponentWrapper,
     EditorComponentCursor,
     EditorComponentTable,
+  },
+  methods: {
+    pickPositionField(props: { [index: string]: any }, keys: string[]) {
+      const result = { ...props }
+      const positionProps: { [index: string]: any } = {}
+      keys.forEach((key: string) => {
+        positionProps[key] = props[key]
+        delete props[key]
+      })
+      return {
+        picked: positionProps,
+        remaining: result
+      }
+    }
   },
   setup() {
     const store = useStore<GlobalStore>()
@@ -59,7 +76,7 @@ export default defineComponent({
       store.commit("addComponent", componentOption)
     }
 
-    const handleComponentClick = (options: { id: string, componentRect: CursorRect }) => {
+    const handleComponentClick = (options: { id: string }) => {
       store.commit("setActive", options)
     }
 
@@ -67,8 +84,12 @@ export default defineComponent({
       store.commit("removeComponent", id)
     }
 
-    const handleComponentValueChange = (key: string, value: any ) => {
-      store.commit("updateComponent", {key, value})
+    const handleComponentValueChange = (key: string, value: any) => {
+      store.commit("updateComponent", {[key]: value})
+    }
+
+    const batchUpdate = (options: { [index: string]: any }) => {
+      store.commit("updateComponent", options)
     }
 
     return {
@@ -78,6 +99,8 @@ export default defineComponent({
       activeComponent,
       handleComponentRemove,
       handleComponentValueChange,
+      batchUpdate,
+      PositionKeys,
     };
   },
 });
