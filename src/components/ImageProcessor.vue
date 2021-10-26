@@ -47,13 +47,12 @@ export default defineComponent({
     watch(showModal, async (newValue) => {
       if (newValue) {
         await nextTick()
-        console.log(imageRef)
         if (imageRef.value) {
           cropper = new Cropper(imageRef.value, {
             aspectRatio: 16 / 9,
             viewMode: 1,
             crop(event) {
-              console.log(event)
+              // console.log(event)
             }
           })
         }

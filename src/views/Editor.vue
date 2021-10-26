@@ -9,7 +9,7 @@
         <div class="editor-page">
           <editor-component-wrapper
             v-for="comp in editorComponents"
-            :key="comp.id"
+            :key="`${comp.id}_${comp.props.left}_${comp.props.top}`"
             :id="comp.id"
             :props="pickPositionField(comp.props, PositionKeys).picked"
             :active="activeComponent && activeComponent.id === comp.id"
@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, reactive, watch } from "vue";
 import { useStore } from "vuex";
 import { GlobalStore, EditorComponent } from "../store/types";
 import MaterialList from "../components/MaterialList/index.vue";
@@ -53,11 +53,11 @@ export default defineComponent({
   },
   methods: {
     pickPositionField(props: { [index: string]: any }, keys: string[]) {
-      const result = { ...props }
+      const result = Object.assign({}, props)
       const positionProps: { [index: string]: any } = {}
       keys.forEach((key: string) => {
-        positionProps[key] = props[key]
-        delete props[key]
+        positionProps[key] = result[key]
+        delete result[key]
       })
       return {
         picked: positionProps,

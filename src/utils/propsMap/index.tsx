@@ -1,35 +1,10 @@
-import { TextProps } from 'h5-editor-stripe'
-
-export type AllPropsUnion = (keyof TextProps)| 'imageSrc'
-
-interface SubSlot {
-  [index: string]: SlotOption
-}
-
-export interface SlotOption {
-  component: string
-  options: any[]
-  slots?: SubSlot
-
-}
-export interface FormMap {
-  component: string
-  id: string
-  label: string
-
-  text?: string
-  valueProp?: string
-  eventName: string
-  otherProps?: {
-    [index: string]: any
-  }
-
-  beforeFormatter?(opt: any): any
-  afterFormattter?(opt: any): any
-
-  slots?: SubSlot
-
-}
+import { CSSProperties } from '@vue/runtime-dom'
+import { CommonProps, TextProps } from 'h5-editor-stripe'
+import { AllPropsUnion, FormMap, TFormsMap } from './types'
+import { getNumberInputOptions } from './number-input'
+import { getBorderOptions } from './border'
+import { positionOptions } from './position'
+export * from './types'
 
 const FontFamilyArray = [{
   text: '宋体',
@@ -53,7 +28,7 @@ const FontFamilyOptions = FontFamilyArray.map((font) => {
   }
 })
 
-export const FormsMap: { [p in AllPropsUnion]?: FormMap } = {
+export const FormsMap: TFormsMap = {
   width: {
     id: 'width',
     component: "ElInput",
@@ -91,10 +66,94 @@ export const FormsMap: { [p in AllPropsUnion]?: FormMap } = {
     beforeFormatter: (source: string) => parseInt(source),
     afterFormattter: (source: number) => `${source}px`
   },
+  fontWeight: {
+    id: 'fontWeight',
+    component: 'el-button',
+    wrapperStyle: {
+      display: 'inline-block',
+      marginLeft: '100px'
+    },
+    label: '',
+    eventName: 'click',
+    valueProp: 'data-value',
+    otherProps: (value: string) => {
+      return {
+        type: value === 'bold' ? "primary" : 'normal',
+        round: true,
+        size: 'medium',
+        style: { fontWeight: 700,  width: '45px', padding: '10px' }
+      }
+    },
+    afterFormattter: (e) => e?.target?.dataset.value === 'bold' ? 'normal' : 'bold',
+    slots: {
+      default: {
+        component: 'span',
+        options: [
+          {
+            text: 'B'
+          }
+        ]
+      }
+    }
+  },
+  fontStyle: {
+    id: 'fontStyle',
+    component: 'el-button',
+    wrapperStyle: {
+      display: 'inline-block',
+    },
+    label: '',
+    valueProp: 'data-value',
+    eventName: 'click',
+    otherProps: (value: string) => ({
+      type: value === 'italic' ? "primary" : 'normal',
+      round: true,
+      size: 'medium',
+      style: { fontStyle: 'italic', fontWeight: 700, width: '45px', padding: '10px' },
+    }),
+    afterFormattter: (e) => e?.target?.dataset.value === 'italic' ? 'normal' : 'italic',
+    slots: {
+      default: {
+        component: 'span',
+        options: [
+          {
+            text: 'I'
+          }
+        ]
+      }
+    }
+  },
+  textDecoration: {
+    id: 'textDecoration',
+    component: 'el-button',
+    wrapperStyle: {
+      display: 'inline-block',
+    },
+    label: '',
+    eventName: 'click',
+    valueProp: 'data-value',
+    otherProps: (value: string) => ({
+      type: value === 'underline' ? "primary" : 'normal',
+      round: true,
+      size: 'medium',
+      style: { textDecoration: 'underline', fontWeight: 700, width: '45px', padding: '10px' },
+    }),
+    afterFormattter: (e) => e?.target?.dataset.value === 'underline' ? 'none' : 'underline',
+    slots: {
+      default: {
+        component: 'span',
+        options: [
+          {
+            text: 'U'
+          }
+        ]
+      }
+    }
+  },
   color: {
     id: 'color',
     component: 'color-picker',
-    label: '颜色',
+    label: '文字颜色',
     valueProp: 'value',
     eventName: 'change'
   },
@@ -177,5 +236,8 @@ export const FormsMap: { [p in AllPropsUnion]?: FormMap } = {
           }]
       }
     }
-  }
+  },
+  ...getNumberInputOptions(),
+  ...getBorderOptions(),
+  ...positionOptions
 }

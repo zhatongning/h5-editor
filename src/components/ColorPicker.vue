@@ -1,7 +1,7 @@
 <template>
   <div class="color-picker">
     <div class="all-color-selector">
-      <input type="color" name="color-picker" :value="value" @input="(e) => handleChange(e.target.value)">
+      <input class="picker" type="color" name="color-picker" :value="value" @input="(e) => handleChange(e.target.value)">
     </div>
     <ul class="recommand-color-list">
       <li v-for="color in recommendColorList" :key="color" class="item" @click="() => handleChange(color)">
@@ -46,13 +46,18 @@ export default defineComponent({
   .all-color-selector {
     margin-right: 10px;
   }
+  .picker {
+    cursor: pointer;
+    width: 40px;
+  }
   .recommand-color-list {
     display: flex;
     flex-wrap: wrap;
     .item {
       margin-top: 6px;
+      cursor: pointer;
       .color-box {
-        width: 25px;
+        width: 20px;
         height: 20px;
         margin-right: 6px;
       }

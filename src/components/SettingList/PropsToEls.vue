@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <div class="component-item" v-for="component in propsComponents" :key="component.id">
+    <div class="component-item" v-for="component in propsComponents" :key="component.id" :style="component.wrapperStyle">
       <label class="label">
         {{ component.label }}
       </label>
@@ -8,7 +8,7 @@
         class="item-editor"
         :is="component.component"
         :[component.valueProp]="component.value"
-        v-bind="component.otherProps"
+        v-bind="typeof component.otherProps === 'function' ? component.otherProps(component.value) : component.otherProps"
         v-on="{
           [component.eventName]: (e) => component.eventListerer(e, component.id)
         }"
@@ -33,7 +33,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
-import { FormsMap, FormMap, AllPropsUnion } from '../../utils/propsMap'
+import { FormsMap, FormMap, AllPropsUnion } from '../../utils/propsMap/index'
 import { reduce } from 'lodash-es'
 import VNodeRenderer from '../VNodeComponent'
 import ColorPicker from '@/components/ColorPicker.vue'
@@ -97,5 +97,6 @@ export default defineComponent({
   flex: 100px 0 0;
 }
 .item-editor {
+  flex-grow: 1;
 }
 </style>

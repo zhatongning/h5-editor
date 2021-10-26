@@ -1,4 +1,5 @@
 <template>
+  <pre>{{ $attrs.props }}</pre>
   <el-tabs class="editor-setting-tabs" v-model="activeTab" type="border-card" @tab-click="handleTabChange">
     <el-tab-pane v-for="tab in tabsConfig" :key="tab.name" :label="tab.label" :name="tab.name">
       <v-node-component :vnode="tab.content" ></v-node-component>
@@ -38,7 +39,7 @@ export default defineComponent({
     ]
 
     const handleTabChange = (tab: any) => {
-      console.log('handleTabChange')
+      // console.log('handleTabChange')
     }
 
     return {

@@ -46,6 +46,7 @@ export default defineComponent({
     }
 
     const offset = {x: 0, y: 0}
+    let dragMoved = false
     const handleDragStart = (e: MouseEvent) => {
       if (!props.active) return
       const element = wraperRef.value
@@ -60,17 +61,20 @@ export default defineComponent({
     }
 
     const handleDrag = (e: MouseEvent) => {
+      dragMoved = true
       curPos.left = e.clientX  - offset.x
       curPos.top = e.clientY - offset.y
     }
 
     const handleMouseUp = () => {
       document.body.removeEventListener('mousemove', handleDrag)
+      if (!dragMoved) return
       context.emit('on-component-update', {
         position: 'absolute',
         left: curPos.left + 'px',
         top: curPos.top + 'px'
       })
+      dragMoved = false
     }
 
     return {

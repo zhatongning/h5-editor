@@ -139,7 +139,7 @@ export default defineComponent({
     }
 
     const handleInputError = (e: InputEvent) => {
-      console.log(e)
+      // console.log(e)
     }
 
     const handleRemove = (id: string) => {

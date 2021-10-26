@@ -17,12 +17,12 @@ const itemList: { name: string, title: string, propKeys: string[] }[] = [
   {
     name: 'basic',
     title: '基本属性',
-    propKeys: ['text', 'fontSize', 'fontFamily', 'textAlign', 'color', 'backgroundColor']
+    propKeys: ['text', 'fontSize', 'fontFamily', 'fontWeight', 'fontStyle', 'textDecoration' ,'lineHeight', 'textAlign', 'color', 'backgroundColor']
   },
   {
     name: 'bounding',
     title: '尺寸',
-    propKeys: ['height', 'width', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom']
+    propKeys: ['width', 'height', 'paddingLeft', 'paddingRight', 'paddingTop', 'paddingBottom']
   },
   {
     name: 'border',

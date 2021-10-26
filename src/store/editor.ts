@@ -2,6 +2,11 @@ import { EditorOptions, EditorComponent ,GlobalStore } from "./types";
 import { Module } from 'vuex'
 import { v4 as uuid } from 'uuid'
 
+const extraPositionInfo = {
+  position: 'absolute',
+  left: '0px',
+  top: '0px'
+}
 
 const editorModule: Module<EditorOptions, GlobalStore> = {
   state: () => ({
@@ -18,7 +23,7 @@ const editorModule: Module<EditorOptions, GlobalStore> = {
       state.components.push({
         id: uuid(),
         type: payload.type,
-        props: {...payload.props}
+        props: {...payload.props, ...extraPositionInfo}
       })
     },
     removeComponent(state: EditorOptions, payload: string) {
@@ -26,10 +31,12 @@ const editorModule: Module<EditorOptions, GlobalStore> = {
       state.currentComponentId = ''
     },
     setActive(state: EditorOptions, payload: { id: string }) {
-      console.log(payload.id)
+      console.log('setActive')
       state.currentComponentId = payload.id
     },
     updateComponent(state, options: { [index: string]: any }) {
+      console.log('updateComponnet')
+      console.log(options)
       const currentComponent = state.components.find(comp => comp.id === state.currentComponentId)
       if (currentComponent) {
         Object.keys(options).forEach((key) => {
