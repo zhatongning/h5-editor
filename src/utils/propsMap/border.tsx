@@ -7,7 +7,7 @@ export const getBorderOptions: () => TFormsMap = () => {
     ...configDropdown({
       id: 'borderStyle',
       label: '边框类型',
-      text: '选择',
+      text: '选择边框样式',
       itemOptions: [
         {
           command: '',

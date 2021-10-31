@@ -49,6 +49,8 @@ export default defineComponent({
   .picker {
     cursor: pointer;
     width: 40px;
+    border: none 0;
+    background-color: transparent;
   }
   .recommand-color-list {
     display: flex;

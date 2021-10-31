@@ -15,7 +15,7 @@
       >
         <template v-for="(item, slotName) in component.slots" v-slot:[slotName]>
           <component :is="item.component" v-for="(option, index) in item.options" v-bind="option" :key="index" >
-            <span v-if="option && option.text">{{ option.text }}</span>
+            <v-node-renderer v-if="option && option.text" :vnode="option.text" />
             <template v-for="(childItem, childSlotName) in item.slots" v-slot:[childSlotName]>
               <component :is="childItem.component" v-for="(opt, childIndex) in childItem.options" v-bind="opt" :key="childIndex" >
                 <span v-if="typeof opt.text === 'string'" >

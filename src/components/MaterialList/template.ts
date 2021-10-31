@@ -1,32 +1,20 @@
-import { TextProps } from 'h5-editor-stripe'
+import { config } from '@vue/test-utils'
+import { ImageProps, TextProps } from 'h5-editor-stripe'
 const prefix =  "http://ttttf.oss-cn-hangzhou.aliyuncs.com/editors/assets"
 
 interface LTextProps extends Partial<TextProps> {
   tag?: string
 }
 
-export const TextTemplatesConfig: LTextProps[] = [
+export const TextTemplatesSpecialConfig: LTextProps[] = [
   {
     text: '添加大标题',
     fontSize: '30px',
     fontWeight: 'bold',
-    textAlign: 'center',
-    fontStyle: 'normal',
-    textDecoration: 'none',
     tag: 'h2',
-    marginTop: '0px',
-    marginBottom: '0px',
     color: 'rgb(0, 0, 0)',
     width: '200px',
     height: '42px',
-    paddingTop: '0px',
-    paddingRight: '0px',
-    paddingBottom: '0px',
-    paddingLeft: '0px',
-    borderStyle: 'none',
-    borderColor: 'transparent',
-    borderWidth: '0px',
-    borderRadius: '0px'
   },
   {
     text: '添加副标题',
@@ -101,7 +89,25 @@ export const TextTemplatesConfig: LTextProps[] = [
   },
 ]
 
-export const ImageTemplateConfig = [
+// 额外的一些默认样式， 需要根据当前所拥有的样式生成对应样式的编辑器。
+const extraTextConfig = {
+  textAlign: 'center',
+  fontStyle: 'normal',
+  textDecoration: 'none',
+}
+
+const genaralConfig = {
+  paddingTop: '0px',
+  paddingRight: '0px',
+  paddingBottom: '0px',
+  paddingLeft: '0px',
+  borderStyle: 'none',
+  borderColor: 'transparent',
+  borderWidth: '0px',
+  borderRadius: '0px'
+}
+
+const ImageTemplateSpecialConfig = [
   {
     imageSrc: `${prefix}/decoration-wrapper`,
     width: '150px',
@@ -120,14 +126,15 @@ export const ImageTemplateConfig = [
   },
 ]
 
+export const TextTemplatesConfig = TextTemplatesSpecialConfig.map(config => ({ ...extraTextConfig, ...genaralConfig, ...config }))
+
 // 图片默认是可以拖拽的，导出的图片默认配置成不可拖拽
-void function configImageTemplateNotDraggable() {
-  ImageTemplateConfig.forEach((item) => {
-    Object.defineProperty(item, 'draggable', {
-      value: false,
-      configurable: false,
-      enumerable: true,
-      writable: false
-    })
+ImageTemplateSpecialConfig.forEach((item) => {
+  Object.defineProperty(item, 'draggable', {
+    value: false,
+    configurable: false,
+    enumerable: true,
+    writable: false
   })
-}()
+})
+export const ImageTemplateConfig = ImageTemplateSpecialConfig.map(config => ({ ...genaralConfig, ...config }))

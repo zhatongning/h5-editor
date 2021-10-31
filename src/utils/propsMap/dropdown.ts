@@ -1,5 +1,7 @@
 import { TFormsMap } from './types'
 import { VNode } from '@vue/runtime-core'
+import { h } from '@vue/runtime-dom'
+import { ArrowDown } from '@element-plus/icons'
 
 interface DropdownOption {
   id: string
@@ -21,21 +23,26 @@ export const configDropdown: (options: DropdownOption) => TFormsMap = ({
   text,
   itemOptions,
 }) => ({
-  borderStyle: {
+  [id]: {
     id,
     component: 'ElDropdown',
     label,
     eventName: 'command',
     otherProps: {
-      'split-button': true,
       type: "primary",
       trigger: 'click',
     },
     slots: {
       default: {
-        component: 'span',
+        component: 'el-button',
         options: [{
-          text
+          text: h('span', { style: {
+            display: 'flex',
+            alignItems: 'center'
+          } }, [
+            text,
+            h(ArrowDown, { style: { marginLeft: '5px' },width: '1em', height: '1em', fontWeight: 600 })
+          ])
         }],
       },
       dropdown: {

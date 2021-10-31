@@ -1,9 +1,10 @@
-import { CSSProperties } from '@vue/runtime-dom'
+import { CSSProperties, h, resolveComponent } from '@vue/runtime-dom'
 import { CommonProps, TextProps } from 'h5-editor-stripe'
 import { AllPropsUnion, FormMap, TFormsMap } from './types'
 import { getNumberInputOptions } from './number-input'
 import { getBorderOptions } from './border'
 import { positionOptions } from './position'
+import { configDropdown } from './dropdown'
 export * from './types'
 
 const FontFamilyArray = [{
@@ -172,39 +173,15 @@ export const FormsMap: TFormsMap = {
       max: 3
     }
   },
-  fontFamily: {
+  fontFamily: configDropdown({
     id: 'fontFamily',
-    component: 'ElDropdown',
     label: '字体',
-    eventName: 'command',
-    otherProps: {
-      'split-button': true,
-      type: "primary",
-      trigger: 'click',
-    },
     text: '选择字体',
-    slots: {
-      default: {
-        component: 'span',
-        options: [{
-          text: '选择字体'
-        }],
-      },
-      dropdown: {
-        component: 'ElDropdownMenu',
-        options: [{}],
-        slots: {
-          default: {
-            component: 'ElDropdownItem',
-            options: [{
-              command: '',
-              text: '无'
-            }, ...FontFamilyOptions]
-          }
-        }
-      }
-    }
-  },
+    itemOptions: [{
+      command: '',
+      text: '无'
+    }, ...FontFamilyOptions]
+  }).fontFamily,
   imageSrc: {
     id: 'imageSrc',
     component: 'image-processor',
