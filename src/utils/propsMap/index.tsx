@@ -158,6 +158,13 @@ export const FormsMap: TFormsMap = {
     valueProp: 'value',
     eventName: 'change'
   },
+  backgroundColor: {
+    id: 'backgroundColor',
+    component: 'color-picker',
+    label: '背景颜色',
+    valueProp: 'value',
+    eventName: 'change'
+  },
   lineHeight: {
     id: 'lineHeight',
     component: 'ElSlider',

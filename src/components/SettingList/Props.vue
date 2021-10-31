@@ -1,9 +1,11 @@
 <template>
   <div class="collapse">
     <el-collapse v-model="activeNames" @change="handleChange">
-      <el-collapse-item v-for="item in itemList" :key="item.name" :title="item.title" :name="item.name">
-        <props-to-els :props="pick($attrs.props, item.propKeys)" v-bind="omitPropAttrs"/>
-      </el-collapse-item>
+      <template v-for="item in itemList">
+        <el-collapse-item :key="item.name" v-if="!isEmpty(pick($attrs.props, item.propKeys))" :title="item.title" :name="item.name">
+          <props-to-els :props="pick($attrs.props, item.propKeys)" v-bind="omitPropAttrs"/>
+        </el-collapse-item>
+      </template>
     </el-collapse>
   </div>
 </template>
@@ -11,7 +13,7 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import PropsToEls from './PropsToEls.vue'
-import { pick, omit } from 'lodash-es'
+import { pick, omit, isEmpty } from 'lodash-es'
 
 const itemList: { name: string, title: string, propKeys: string[] }[] = [
   {
@@ -41,7 +43,8 @@ export default defineComponent({
     PropsToEls
   },
   methods: {
-    pick
+    pick,
+    isEmpty,
   },
   setup(props, context) {
     const omitPropAttrs = computed(() => omit(context.attrs, ['props']))

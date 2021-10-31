@@ -126,6 +126,41 @@ const ImageTemplateSpecialConfig = [
   },
 ]
 
+const ShapeTemplateSpecialConfig = [
+  {
+    id: 'rect50x100',
+    width: '100px',
+    height: '50px',
+    backgroundColor: '#efefef',
+  },
+  {
+    id: 'circle100',
+    width: '100px',
+    height: '100px',
+    borderRadius: '50%',
+    backgroundColor: '#efefef',
+  },
+  {
+    id: 'rect100x100',
+    width: '100px',
+    height: '100px',
+    backgroundColor: '#efefef',
+  },
+  {
+    id: 'rect50x100',
+    width: '100px',
+    height: '50px',
+    backgroundColor: '#36cfca'
+  },
+  {
+    id: 'circle100Blue',
+    width: '100px',
+    height: '100px',
+    borderRadius: '50%',
+    backgroundColor: '#40a9ff'
+  }
+]
+
 export const TextTemplatesConfig = TextTemplatesSpecialConfig.map(config => ({ ...extraTextConfig, ...genaralConfig, ...config }))
 
 // 图片默认是可以拖拽的，导出的图片默认配置成不可拖拽
@@ -138,3 +173,5 @@ ImageTemplateSpecialConfig.forEach((item) => {
   })
 })
 export const ImageTemplateConfig = ImageTemplateSpecialConfig.map(config => ({ ...genaralConfig, ...config }))
+
+export const ShapetemplateConfig = ShapeTemplateSpecialConfig.map(config => ({ ...genaralConfig, ...config }))

@@ -13,6 +13,7 @@
 import { defineComponent, ref } from 'vue'
 import MaterialText from './Text.vue'
 import MaterialImage from './Image.vue'
+import MaterialShape from './Shape.vue'
 import Figcap from '../Figcap.vue'
 
 interface NavItem {
@@ -43,6 +44,7 @@ export default defineComponent({
   components: {
     MaterialText,
     MaterialImage,
+    MaterialShape,
     Figcap
   },
   setup() {
